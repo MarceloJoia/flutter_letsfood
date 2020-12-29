@@ -1,4 +1,4 @@
-name: flutter_lets_food
+name: flutter_letsfood
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -45,9 +45,11 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+      - assets/images/letsfood-logo.png
+      - assets/images/letsfood-icon.png
+      - assets/images/favicon.png
+      - assets/images/seu-logo-vai-aqui.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
 import './screens/auth/login_page.dart';
+import './screens/auth/register_page.dart';
+import './screens/restaurants/restaurants_page.dart';
 
 void main() => runApp(FlutterFoodApp());
 
@@ -12,14 +15,21 @@ class FlutterFoodApp extends StatelessWidget {
 
       ///Definir Cor para o Thema
       theme: ThemeData(
-        primaryColor: Color.fromRGBO(147, 70, 248, 1),
+        primaryColor: Color.fromRGBO(144, 0, 0, 1),
         backgroundColor: Colors.white,
         accentColor: Colors.black,
         brightness: Brightness.dark,
       ),
 
-      /// Definir o Home
-      home: LoginScreen(),
+      //rota inicial Home
+      initialRoute: '/login',
+
+      // Roteamento nativo do Flutter
+      routes: <String, WidgetBuilder>{
+        '/login': (context) => LoginScreen(),
+        '/register': (context) => RegisterScreen(),
+        '/restaurants': (context) => RestaurantsPage()
+      },
     );
   }
 }
