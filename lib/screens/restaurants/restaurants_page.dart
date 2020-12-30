@@ -30,6 +30,18 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
       contact: 'contato@cantagalo.com.br',
       uuid: '5sdfgsd6889a64sdfc',
     ),
+    Restaurant(
+      name: "Cobra d'agua",
+      image: '',
+      contact: 'contato@cobra.com.br',
+      uuid: '5sdfgsd6889a64sdfc',
+    ),
+    Restaurant(
+      name: "Pizza do João",
+      image: '',
+      contact: 'contato@pizza.com.br',
+      uuid: '5sdfgsd6889a64sdfc',
+    ),
   ];
 
   @override
