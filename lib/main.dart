@@ -4,6 +4,8 @@ import './screens/auth/login_page.dart';
 import './screens/auth/register_page.dart';
 import './screens/restaurants/restaurants_page.dart';
 import './screens/foods/foods_page.dart';
+import './screens/carts/cart_page.dart';
+import './screens/order/order_page.dart';
 
 void main() => runApp(FlutterFoodApp());
 
@@ -22,7 +24,7 @@ class FlutterFoodApp extends StatelessWidget {
         brightness: Brightness.dark,
       ),
 
-      //rota inicial Home
+      //rota inicial -Home
       initialRoute: '/login',
 
       // Roteamento nativo do Flutter
@@ -31,6 +33,8 @@ class FlutterFoodApp extends StatelessWidget {
         '/register': (context) => RegisterScreen(),
         '/restaurants': (context) => RestaurantsPage(),
         '/foods': (context) => FoodsScreen(),
+        '/cart': (context) => CartScreen(),
+        '/my-orders': (context) => OrderScreen(),
       },
     );
   }

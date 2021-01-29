@@ -4,6 +4,7 @@ import '../../models/Category.dart';
 import '../../models/Food.dart';
 import '../foods/widgets/Categories.dart';
 import '../../widgets/food_card.dart';
+import '../../widgets/flutter_bottom_navigator.dart';
 
 class FoodsScreen extends StatefulWidget {
   FoodsScreen({Key key}) : super(key: key);
@@ -82,6 +83,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       body: _buildScreeen(),
+      bottomNavigationBar: FlutterFoodBottomNavigator(0),
     );
   }
 
@@ -94,7 +96,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
   Widget _buildfood() {
     return Container(
       // Pegar a altura total
-      height: MediaQuery.of(context).size.height - 230,
+      height: MediaQuery.of(context).size.height - 196,
       width: MediaQuery.of(context).size.width,
       //color: Colors.black,
 
