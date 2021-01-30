@@ -112,6 +112,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
             image: food.image,
             price: food.price,
             title: food.title,
+            notShowIconCart: false,
           );
         },
       ),
