@@ -5,6 +5,7 @@ import '../../models/Order.dart';
 import '../../models/Food.dart';
 import '../../models/Evaluation.dart';
 import '../../widgets/food_card.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
   Order _order = Order(
@@ -41,7 +42,18 @@ class OrderDetailsScreen extends StatelessWidget {
         price: '12.89',
       ),
     ],
-    evaluations: [],
+    evaluations: [
+      Evaluation(
+        comment: 'Pedido muito bom',
+        nameUser: 'Marcelo J',
+        stars: 5,
+      ),
+      Evaluation(
+        comment: 'Recomendo',
+        nameUser: 'Pedro B',
+        stars: 4,
+      ),
+    ],
   );
 
   @override
@@ -78,6 +90,16 @@ class OrderDetailsScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   fontSize: 22)),
           _builFoodsOrder(context),
+          Container(height: 30),
+
+          /// Avaliação do pedido
+          Container(height: 20),
+          Text('Avaliações',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 22)),
+          _builEvaluationsOrder(),
         ],
       ),
     );
@@ -105,20 +127,87 @@ class OrderDetailsScreen extends StatelessWidget {
   /// Listar produtos do pedido
   Widget _builFoodsOrder(context) {
     // Os produtos são uma lista um array usar ListView()
-    return ListView.builder(
-        //remover o Scroll
+    return Container(
+      padding: EdgeInsets.only(left: 10),
+      child: ListView.builder(
+          //remover o Scroll
+          shrinkWrap: true,
+          itemCount: _order.foods.length,
+          itemBuilder: (context, index) {
+            final Food food = _order.foods[index];
+            return FoodCard(
+              identify: food.identify,
+              description: food.description,
+              image: food.image,
+              price: food.price,
+              title: food.title,
+              notShowIconCart: true,
+            );
+          }),
+    );
+  }
+
+  /// Avaliação do pedido
+  Widget _builEvaluationsOrder() {
+    return Container(
+      padding: EdgeInsets.only(left: 10),
+      child: ListView.builder(
         shrinkWrap: true,
-        itemCount: _order.foods.length,
+        itemCount: _order.evaluations.length,
         itemBuilder: (context, index) {
-          final Food food = _order.foods[index];
-          return FoodCard(
-            identify: food.identify,
-            description: food.description,
-            image: food.image,
-            price: food.price,
-            title: food.title,
-            notShowIconCart: true,
-          );
-        });
+          final Evaluation evaluation = _order.evaluations[index];
+          return _builEvaluationItem(evaluation, context);
+        },
+      ),
+    );
+  }
+
+  Widget _builEvaluationItem(Evaluation evaluation, context) {
+    return Card(
+      elevation: 2.5,
+      child: Container(
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.grey[50],
+          border: Border.all(color: Colors.grey[100]),
+          borderRadius: BorderRadius.all(Radius.circular(3)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            RatingBar.builder(
+              initialRating: evaluation.stars,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemSize: 40,
+              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (rating) {
+                print(rating);
+              },
+            ),
+            Row(
+              children: <Widget>[
+                Text(
+                  "${evaluation.nameUser} - ",
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  evaluation.comment,
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
