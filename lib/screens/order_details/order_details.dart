@@ -43,7 +43,7 @@ class OrderDetailsScreen extends StatelessWidget {
       ),
     ],
     evaluations: [
-      Evaluation(
+      /* Evaluation(
         comment: 'Pedido muito bom',
         nameUser: 'Marcelo J',
         stars: 5,
@@ -52,7 +52,7 @@ class OrderDetailsScreen extends StatelessWidget {
         comment: 'Recomendo',
         nameUser: 'Pedro B',
         stars: 4,
-      ),
+      ),*/
     ],
   );
 
@@ -99,7 +99,7 @@ class OrderDetailsScreen extends StatelessWidget {
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 22)),
-          _builEvaluationsOrder(),
+          _builEvaluationsOrder(context),
         ],
       ),
     );
@@ -148,18 +148,35 @@ class OrderDetailsScreen extends StatelessWidget {
   }
 
   /// Avaliação do pedido
-  Widget _builEvaluationsOrder() {
-    return Container(
-      padding: EdgeInsets.only(left: 10),
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: _order.evaluations.length,
-        itemBuilder: (context, index) {
-          final Evaluation evaluation = _order.evaluations[index];
-          return _builEvaluationItem(evaluation, context);
-        },
-      ),
-    );
+  Widget _builEvaluationsOrder(context) {
+    return _order.evaluations.length > 0
+        ? Container(
+            padding: EdgeInsets.only(left: 10),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _order.evaluations.length,
+              itemBuilder: (context, index) {
+                final Evaluation evaluation = _order.evaluations[index];
+                return _builEvaluationItem(evaluation, context);
+              },
+            ),
+          )
+        : Container(
+            height: 40,
+            margin: EdgeInsets.only(top: 10, bottom: 40),
+            child: RaisedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/evaluation-order');
+              },
+              color: Colors.orange,
+              elevation: 2.2,
+              child: Text('Avaliar o pedido'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6),
+                side: BorderSide(color: Colors.orangeAccent),
+              ),
+            ),
+          );
   }
 
   Widget _builEvaluationItem(Evaluation evaluation, context) {
