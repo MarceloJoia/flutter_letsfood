@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import './widgets/heading_auth.dart';
 
@@ -11,6 +12,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Restaura as configurações defaut
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     // Pagar a largura da tela do Celular
     _deviceWidth = MediaQuery.of(context).size.width;
     // Pagar a altura da tela do Celular

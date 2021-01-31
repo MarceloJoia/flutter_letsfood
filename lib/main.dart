@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './screens/auth/login_page.dart';
-import './screens/auth/register_page.dart';
-import './screens/restaurants/restaurants_page.dart';
-import './screens/foods/foods_page.dart';
-import './screens/carts/cart_page.dart';
-import './screens/order/order_page.dart';
-import './screens/order_details/order_details.dart';
-import './screens/evaluation_order/evaluation_order.dart';
+import './constants/app_theme.dart';
+import './routes.dart';
 
 void main() => runApp(FlutterFoodApp());
 
@@ -19,27 +13,13 @@ class FlutterFoodApp extends StatelessWidget {
       title: 'LetsFood',
 
       ///Definir Cor para o Thema
-      theme: ThemeData(
-        primaryColor: Color.fromRGBO(144, 0, 0, 1),
-        backgroundColor: Colors.white,
-        accentColor: Colors.black,
-        brightness: Brightness.dark,
-      ),
+      theme: themeData,
 
       //rota inicial -Home
-      initialRoute: '/login',
+      initialRoute: '/',
 
       // Roteamento nativo do Flutter
-      routes: <String, WidgetBuilder>{
-        '/login': (context) => LoginScreen(),
-        '/register': (context) => RegisterScreen(),
-        '/restaurants': (context) => RestaurantsPage(),
-        '/foods': (context) => FoodsScreen(),
-        '/cart': (context) => CartScreen(),
-        '/my-orders': (context) => OrderScreen(),
-        '/order-details': (context) => OrderDetailsScreen(),
-        '/evaluation-order': (context) => EvaluationsOrderScreen(),
-      },
+      routes: Routes.routes,
     );
   }
 }
