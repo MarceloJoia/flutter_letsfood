@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../models/Restaurant.dart';
 import './widgets/RestaurantCard.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
+import '../../data/network/repositories/restaurante_repository.dart';
 
 class RestaurantsPage extends StatefulWidget {
   RestaurantsPage({Key key}) : super(key: key);
@@ -13,38 +14,17 @@ class RestaurantsPage extends StatefulWidget {
 }
 
 class _RestaurantsPageState extends State<RestaurantsPage> {
-  List<Restaurant> _restaurants = [
-    Restaurant(
-      name: 'Joia Marketing',
-      image: '',
-      contact: 'contato@joiamarketing.com.br',
-      uuid: '54546889asdf6sd55564sdfc',
-    ),
-    Restaurant(
-      name: 'Café com Sapatilhas',
-      image: '',
-      contact: 'contato@sapatilhas.com.br',
-      uuid: '54546889a64sdfc',
-    ),
-    Restaurant(
-      name: 'Canta Galo',
-      image: '',
-      contact: 'contato@cantagalo.com.br',
-      uuid: '5sdfgsd6889a64sdfc',
-    ),
-    Restaurant(
-      name: "Cobra d'agua",
-      image: '',
-      contact: 'contato@cobra.com.br',
-      uuid: '5sdfgsd6889a64sdfc',
-    ),
-    Restaurant(
-      name: "Pizza do João",
-      image: '',
-      contact: 'contato@pizza.com.br',
-      uuid: '5sdfgsd6889a64sdfc',
-    ),
-  ];
+  List<Restaurant> _restaurants = [];
+
+  // Declara variável para o Loading
+  bool siLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    getRestaurants();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +36,8 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         centerTitle: true,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _buildRestaurants(context),
+      body:
+          siLoading ? CircularProgressIndicator() : _buildRestaurants(context),
       bottomNavigationBar: FlutterFoodBottomNavigator(0),
     );
   }
@@ -80,5 +61,23 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         },
       ),
     );
+  }
+
+  void getRestaurants() async {
+    // iniciar o Loading
+    setState(() => siLoading = true);
+
+    /**
+     * Pega os restaurantes vindas da API repository
+     * Como devolve algo no futuro tem que fazer uma await
+     */
+    final restaurants = await RestaurantRepository().getRestaurants();
+
+    setState(() {
+      _restaurants.addAll(restaurants);
+    });
+
+    // fechando o Loading
+    setState(() => siLoading = false);
   }
 }

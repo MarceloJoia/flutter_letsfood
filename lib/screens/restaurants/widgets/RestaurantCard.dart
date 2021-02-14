@@ -44,7 +44,7 @@ class RestarantCard extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: image != ''
                             ? image
-                            : 'https://joiamarketing.com.br/wp-content/uploads/2020/05/cropped-Joia-Marketing-logo-box.png',
+                            : 'http://8a9a0cf13d74.ngrok.io/assets/images/letsfood-icon.png',
                         placeholder: (context, url) => Container(
                           height: 110,
                           width: 110,
@@ -58,7 +58,7 @@ class RestarantCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  //divider linha vertical
+                  //Cria uma Linha Divisória
                   VerticalDivider(color: Theme.of(context).primaryColor),
                   Expanded(
                     child: Text(
