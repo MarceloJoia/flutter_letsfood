@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:mobx/mobx.dart';
 
 import '../models/Food.dart';
@@ -18,6 +20,14 @@ abstract class _FoodsStareBase with Store {
   // Essa propriedade é um observer "@observable"
   @observable
   ObservableList<Food> foods = ObservableList<Food>();
+
+  // Preload
+  @observable
+  bool isLoading = false;
+
+  //Altera o valor da isLoading
+  @action
+  void setLoading(bool value) => isLoading = value;
 
   // Incrementa um item no (@observable"Cart")
   @action
@@ -45,7 +55,9 @@ abstract class _FoodsStareBase with Store {
 
   @action
   Future getFoods(String tokenCompany) async {
+    setLoading(true); //Inicia o Loading
     final response = await _repository.getFoods(tokenCompany);
+    setLoading(false); //Finaliza o Loading
 
     response.map((food) => addFood(Food.fromJson(food))).toList();
   }

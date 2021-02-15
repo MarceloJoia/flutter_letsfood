@@ -24,6 +24,21 @@ mixin _$FoodsStare on _FoodsStareBase, Store {
     });
   }
 
+  final _$isLoadingAtom = Atom(name: '_FoodsStareBase.isLoading');
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
   final _$getFoodsAsyncAction = AsyncAction('_FoodsStareBase.getFoods');
 
   @override
@@ -33,6 +48,17 @@ mixin _$FoodsStare on _FoodsStareBase, Store {
 
   final _$_FoodsStareBaseActionController =
       ActionController(name: '_FoodsStareBase');
+
+  @override
+  void setLoading(bool value) {
+    final _$actionInfo = _$_FoodsStareBaseActionController.startAction(
+        name: '_FoodsStareBase.setLoading');
+    try {
+      return super.setLoading(value);
+    } finally {
+      _$_FoodsStareBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void addFood(Food food) {
@@ -81,7 +107,8 @@ mixin _$FoodsStare on _FoodsStareBase, Store {
   @override
   String toString() {
     return '''
-foods: ${foods}
+foods: ${foods},
+isLoading: ${isLoading}
     ''';
   }
 }

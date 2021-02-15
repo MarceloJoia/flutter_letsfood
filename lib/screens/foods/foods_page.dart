@@ -74,34 +74,50 @@ class _FoodsScreenState extends State<FoodsScreen> {
 
   Widget _buildScreeen() {
     return Column(
-      children: <Widget>[Categories(_categories), _buildfood()],
+      children: <Widget>[
+        Categories(_categories),
+        Observer(
+          builder: (context) {
+            return storeFoods.isLoading
+                ? CircularProgressIndicator()
+                : storeFoods.foods.length == 0
+                    ? Center(
+                        child: Text(
+                          'Nenhum produto encontrado!',
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 18),
+                        ),
+                      )
+                    : _buildfood();
+          },
+        ),
+      ],
     );
   }
 
   Widget _buildfood() {
     return Container(
       // Pegar a altura total
-      height: MediaQuery.of(context).size.height - 196,
+      height: (MediaQuery.of(context).size.height - 196),
       width: MediaQuery.of(context).size.width,
       //color: Colors.black,
 
       ///Construir a lista
-      child: Observer(
-        builder: (context) => ListView.builder(
-          itemCount: storeFoods.foods.length,
-          itemBuilder: (context, index) {
-            final Food food = storeFoods.foods[index];
+      child: ListView.builder(
+        itemCount: storeFoods.foods.length,
+        itemBuilder: (context, index) {
+          final Food food = storeFoods.foods[index];
 
-            return FoodCard(
-              identify: food.identify,
-              description: food.description,
-              image: food.image,
-              price: food.price,
-              title: food.title,
-              notShowIconCart: false,
-            );
-          },
-        ),
+          return FoodCard(
+            identify: food.identify,
+            description: food.description,
+            image: food.image,
+            price: food.price,
+            title: food.title,
+            notShowIconCart: false,
+          );
+        },
       ),
     );
   }
