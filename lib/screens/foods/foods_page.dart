@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../../models/Category.dart';
 import '../../models/Food.dart';
@@ -6,6 +7,7 @@ import '../../models/Restaurant.dart';
 import '../foods/widgets/Categories.dart';
 import '../../widgets/food_card.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
+import '../../stores/foods.store.dart';
 
 class FoodsScreen extends StatefulWidget {
   FoodsScreen({Key key}) : super(key: key);
@@ -17,6 +19,8 @@ class FoodsScreen extends StatefulWidget {
 class _FoodsScreenState extends State<FoodsScreen> {
   // Recuperar os restaurantes
   Restaurant _restaurant;
+  // Recuper Foods
+  FoodsStare storeFoods = new FoodsStare();
 
   // Declarar propriedades das listas
   List<Category> _categories = [
@@ -43,41 +47,6 @@ class _FoodsScreenState extends State<FoodsScreen> {
     ),
   ];
 
-  List<Food> _foods = [
-    Food(
-      identify: '658gvd889sdf',
-      title: 'Bolo de Cereja',
-      image:
-          'https://casadocaminhosc.com.br/wp-content/uploads/2020/12/imagem-Talharim.jpg',
-      description: 'Descrição do Bolo de Cereja',
-      price: '12.89',
-    ),
-    Food(
-      identify: 'g9474gvd889sdf',
-      title: 'Torta de Maracuja',
-      image:
-          'https://casadocaminhosc.com.br/wp-content/uploads/2020/12/imagem-Talharim.jpg',
-      description: 'Descrição do Torta de Maracuja',
-      price: '52.51',
-    ),
-    Food(
-      identify: '394gvd889sdf',
-      title: 'Sanduiche Natural',
-      image:
-          'https://casadocaminhosc.com.br/wp-content/uploads/2020/12/imagem-Talharim.jpg',
-      description: 'Descrição do Sanduiche Natural',
-      price: '18.90',
-    ),
-    Food(
-      identify: '394gvd889sdf',
-      title: 'Sanduiche Natural',
-      image:
-          'https://casadocaminhosc.com.br/wp-content/uploads/2020/12/imagem-Talharim.jpg',
-      description: 'Descrição do Sanduiche Natural',
-      price: '18.90',
-    ),
-  ];
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -86,6 +55,8 @@ class _FoodsScreenState extends State<FoodsScreen> {
     RouteSettings settings = ModalRoute.of(context).settings;
     // agora pego o valor do arguments
     _restaurant = settings.arguments;
+    // Pega todas as comidas desse restaurante
+    storeFoods.getFoods(_restaurant.uuid);
   }
 
   @override
@@ -115,20 +86,22 @@ class _FoodsScreenState extends State<FoodsScreen> {
       //color: Colors.black,
 
       ///Construir a lista
-      child: ListView.builder(
-        itemCount: _foods.length,
-        itemBuilder: (context, index) {
-          // Armazenar em um Objeto
-          final Food food = _foods[index];
-          return FoodCard(
-            identify: food.identify,
-            description: food.description,
-            image: food.image,
-            price: food.price,
-            title: food.title,
-            notShowIconCart: false,
-          );
-        },
+      child: Observer(
+        builder: (context) => ListView.builder(
+          itemCount: storeFoods.foods.length,
+          itemBuilder: (context, index) {
+            final Food food = storeFoods.foods[index];
+
+            return FoodCard(
+              identify: food.identify,
+              description: food.description,
+              image: food.image,
+              price: food.price,
+              title: food.title,
+              notShowIconCart: false,
+            );
+          },
+        ),
       ),
     );
   }
