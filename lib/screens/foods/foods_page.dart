@@ -8,6 +8,7 @@ import '../foods/widgets/Categories.dart';
 import '../../widgets/food_card.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
 import '../../stores/foods.store.dart';
+import '../../widgets/custom_circular_progress_indicator.dart';
 
 class FoodsScreen extends StatefulWidget {
   FoodsScreen({Key key}) : super(key: key);
@@ -79,7 +80,9 @@ class _FoodsScreenState extends State<FoodsScreen> {
         Observer(
           builder: (context) {
             return storeFoods.isLoading
-                ? CircularProgressIndicator()
+                ? CustomCircularProgressIndicator(
+                    textLabel: 'Carregando os produtos',
+                  )
                 : storeFoods.foods.length == 0
                     ? Center(
                         child: Text(

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../models/Restaurant.dart';
 import './widgets/RestaurantCard.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
+import '../../widgets/custom_circular_progress_indicator.dart';
 import '../../data/network/repositories/restaurante_repository.dart';
 
 class RestaurantsPage extends StatefulWidget {
@@ -22,7 +23,6 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
   @override
   void initState() {
     super.initState();
-
     getRestaurants();
   }
 
@@ -36,8 +36,11 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         centerTitle: true,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
-      body:
-          siLoading ? CircularProgressIndicator() : _buildRestaurants(context),
+      body: siLoading
+          ? CustomCircularProgressIndicator(
+              textLabel: 'Carregando os restaurantes',
+            )
+          : _buildRestaurants(context),
       bottomNavigationBar: FlutterFoodBottomNavigator(0),
     );
   }
@@ -61,20 +64,9 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
   }
 
   void getRestaurants() async {
-    // iniciar o Loading
     setState(() => siLoading = true);
-
-    /**
-     * Pega os restaurantes vindas da API repository
-     * Como devolve algo no futuro tem que fazer uma await
-     */
     final restaurants = await RestaurantRepository().getRestaurants();
-
-    setState(() {
-      _restaurants.addAll(restaurants);
-    });
-
-    // fechando o Loading
+    setState(() => _restaurants.addAll(restaurants));
     setState(() => siLoading = false);
   }
 }
