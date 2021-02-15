@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../../models/Restaurant.dart';
+
 class RestarantCard extends StatelessWidget {
-  final String uuid;
-  final String name;
-  final String image;
-  final String contact;
+  final Restaurant restaurant; //Objeto do restaurante inteiro
+
   // Construtor
-  RestarantCard({this.uuid, this.name, this.image, this.contact});
+  RestarantCard({
+    this.restaurant,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/foods');
-        print(name);
+        Navigator.pushNamed(context, '/foods', arguments: restaurant);
+        print(restaurant.name);
       },
       child: Container(
         padding: EdgeInsets.only(
@@ -42,9 +44,9 @@ class RestarantCard extends StatelessWidget {
                     child: ClipOval(
                       //child: Image.asset('assets/images/seu-logo-vai-aqui.jpg'),
                       child: CachedNetworkImage(
-                        imageUrl: image != ''
-                            ? image
-                            : 'http://8a9a0cf13d74.ngrok.io/assets/images/letsfood-icon.png',
+                        imageUrl: restaurant.image != ''
+                            ? restaurant.image
+                            : 'http://0cfb1fb6f398.ngrok.io/assets/images/letsfood-icon.png',
                         placeholder: (context, url) => Container(
                           height: 110,
                           width: 110,
@@ -62,7 +64,7 @@ class RestarantCard extends StatelessWidget {
                   VerticalDivider(color: Theme.of(context).primaryColor),
                   Expanded(
                     child: Text(
-                      name,
+                      restaurant.name,
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.bold,

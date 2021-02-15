@@ -53,10 +53,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
           final Restaurant restaurant = _restaurants[index];
 
           return RestarantCard(
-            uuid: restaurant.uuid,
-            name: restaurant.name,
-            image: restaurant.image,
-            contact: restaurant.contact,
+            restaurant: restaurant,
           );
         },
       ),

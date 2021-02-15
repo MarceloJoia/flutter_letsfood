@@ -1,21 +1,34 @@
-import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
 import '../models/Food.dart';
+import '../data/network/repositories/food_repository.dart';
 
 part 'foods.store.g.dart';
 
 class FoodsStare = _FoodsStareBase with _$FoodsStare;
 
 abstract class _FoodsStareBase with Store {
+  // Instanciar o Repository
+  FoodRepository _repository;
+  // Construtor
+  _FoodsStareBase() {
+    _repository = new FoodRepository();
+  }
+
   // Essa propriedade é um observer "@observable"
   @observable
-  List<Food> foods = [];
+  ObservableList<Food> foods = ObservableList<Food>();
 
-  // Incrementa um item no Cart
+  // Incrementa um item no (@observable"Cart")
   @action
-  void add(Food food) {
+  void addFood(Food food) {
     foods.add(food);
+  }
+
+  // Incrementa vários item no (@observable"Cart")
+  @action
+  void addAll(List<Food> foods) {
+    foods.addAll(foods);
   }
 
   // Remove um item do Cart
@@ -28,5 +41,12 @@ abstract class _FoodsStareBase with Store {
   @action
   void clearFood() {
     foods.clear();
+  }
+
+  @action
+  Future getFoods(String tokenCompany) async {
+    final response = await _repository.getFoods(tokenCompany);
+
+    response.map((food) => addFood(Food.fromJson(food))).toList();
   }
 }

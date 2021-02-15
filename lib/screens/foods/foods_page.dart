@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/Category.dart';
 import '../../models/Food.dart';
+import '../../models/Restaurant.dart';
 import '../foods/widgets/Categories.dart';
 import '../../widgets/food_card.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
@@ -14,6 +15,9 @@ class FoodsScreen extends StatefulWidget {
 }
 
 class _FoodsScreenState extends State<FoodsScreen> {
+  // Recuperar os restaurantes
+  Restaurant _restaurant;
+
   // Declarar propriedades das listas
   List<Category> _categories = [
     // construir a lista de categorias
@@ -75,10 +79,20 @@ class _FoodsScreenState extends State<FoodsScreen> {
   ];
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Pegar as configurações de rota
+    RouteSettings settings = ModalRoute.of(context).settings;
+    // agora pego o valor do arguments
+    _restaurant = settings.arguments;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nome do Restaurante'),
+        title: Text('${_restaurant.name}'),
         centerTitle: true,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
