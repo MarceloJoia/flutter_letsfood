@@ -8,6 +8,7 @@ import '../foods/widgets/Categories.dart';
 import '../../widgets/food_card.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
 import '../../stores/foods.store.dart';
+import '../../stores/categories.store.dart';
 import '../../widgets/custom_circular_progress_indicator.dart';
 
 class FoodsScreen extends StatefulWidget {
@@ -22,42 +23,18 @@ class _FoodsScreenState extends State<FoodsScreen> {
   Restaurant _restaurant;
   // Recuper Foods
   FoodsStare storeFoods = new FoodsStare();
-
-  // Declarar propriedades das listas
-  List<Category> _categories = [
-    // construir a lista de categorias
-    Category(
-      name: 'Salgadinho',
-      description: 'Descrição do Salgadinho',
-      identify: '908ghg35cgasvcs',
-    ),
-    Category(
-      name: 'Bolo Gelado',
-      description: 'Descrição do Bolo gelado',
-      identify: '24342hg35cgasvcs',
-    ),
-    Category(
-      name: 'Suco de Uva',
-      description: 'Descrição do Suco de Uva',
-      identify: 'ghfgwewewewrgasvcs',
-    ),
-    Category(
-      name: 'Farofa de Açaí',
-      description: 'Descrição do Farofa de Açaí',
-      identify: 'ghfgsdfsdf35cgasvcs',
-    ),
-  ];
+  //Recupera as categorias
+  CategoriesStore storeCategories = new CategoriesStore();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    RouteSettings settings =
+        ModalRoute.of(context).settings; // Pegar as configurações de rota
+    _restaurant = settings.arguments; // agora pego o valor do arguments
 
-    // Pegar as configurações de rota
-    RouteSettings settings = ModalRoute.of(context).settings;
-    // agora pego o valor do arguments
-    _restaurant = settings.arguments;
-    // Pega todas as comidas desse restaurante
-    storeFoods.getFoods(_restaurant.uuid);
+    storeCategories.getCategories(_restaurant.uuid); //Carregar Categories
+    storeFoods.getFoods(_restaurant.uuid); // Pega todas as comidas
   }
 
   @override
@@ -76,12 +53,26 @@ class _FoodsScreenState extends State<FoodsScreen> {
   Widget _buildScreeen() {
     return Column(
       children: <Widget>[
-        Categories(_categories),
+        Observer(builder: (context) {
+          return storeCategories.isLoading
+              ? CustomCircularProgressIndicator(
+                  textLabel: 'Carregando as categorias...')
+              : storeCategories.categories.length == 0
+                  ? Center(
+                      child: Text(
+                        'Nenhuma categoria encontrada!',
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 18),
+                      ),
+                    )
+                  : Categories(storeCategories.categories);
+        }),
         Observer(
           builder: (context) {
             return storeFoods.isLoading
                 ? CustomCircularProgressIndicator(
-                    textLabel: 'Carregando os produtos',
+                    textLabel: 'Carregando os produtos...',
                   )
                 : storeFoods.foods.length == 0
                     ? Center(

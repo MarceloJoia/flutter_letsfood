@@ -45,10 +45,11 @@ abstract class _CategoriesStoreBase with Store {
     setLoading(true);
     clearCategories(); // Limpar as categorias carregadas anteriormente
     final response = await _repository.getCategories(tokenCompany);
-    setLoading(false);
 
     response
         .map((categoryJson) => addCategory(Category.fromJson(categoryJson)))
         .toList();
+
+    setLoading(false);
   }
 }
