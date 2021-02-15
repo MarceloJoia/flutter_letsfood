@@ -104,12 +104,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
           final Food food = storeFoods.foods[index];
 
           return FoodCard(
-            identify: food.identify,
-            description: food.description,
-            image: food.image,
-            price: food.price,
-            title: food.title,
-            notShowIconCart: false,
+            food: food,
           );
         },
       ),

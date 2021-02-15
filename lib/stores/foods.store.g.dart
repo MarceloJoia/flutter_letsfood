@@ -24,6 +24,21 @@ mixin _$FoodsStare on _FoodsStareBase, Store {
     });
   }
 
+  final _$cartItensAtom = Atom(name: '_FoodsStareBase.cartItens');
+
+  @override
+  ObservableList<Food> get cartItens {
+    _$cartItensAtom.reportRead();
+    return super.cartItens;
+  }
+
+  @override
+  set cartItens(ObservableList<Food> value) {
+    _$cartItensAtom.reportWrite(value, super.cartItens, () {
+      super.cartItens = value;
+    });
+  }
+
   final _$isLoadingAtom = Atom(name: '_FoodsStareBase.isLoading');
 
   @override
@@ -105,9 +120,54 @@ mixin _$FoodsStare on _FoodsStareBase, Store {
   }
 
   @override
+  void addFoodCart(Food food) {
+    final _$actionInfo = _$_FoodsStareBaseActionController.startAction(
+        name: '_FoodsStareBase.addFoodCart');
+    try {
+      return super.addFoodCart(food);
+    } finally {
+      _$_FoodsStareBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeFoodCart(Food food) {
+    final _$actionInfo = _$_FoodsStareBaseActionController.startAction(
+        name: '_FoodsStareBase.removeFoodCart');
+    try {
+      return super.removeFoodCart(food);
+    } finally {
+      _$_FoodsStareBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearCart() {
+    final _$actionInfo = _$_FoodsStareBaseActionController.startAction(
+        name: '_FoodsStareBase.clearCart');
+    try {
+      return super.clearCart();
+    } finally {
+      _$_FoodsStareBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  bool inFoodCart(Food food) {
+    final _$actionInfo = _$_FoodsStareBaseActionController.startAction(
+        name: '_FoodsStareBase.inFoodCart');
+    try {
+      return super.inFoodCart(food);
+    } finally {
+      _$_FoodsStareBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 foods: ${foods},
+cartItens: ${cartItens},
 isLoading: ${isLoading}
     ''';
   }

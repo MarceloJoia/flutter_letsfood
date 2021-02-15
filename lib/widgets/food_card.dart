@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../models/Food.dart';
+
 class FoodCard extends StatelessWidget {
-  String identify;
-  String description;
-  String image;
-  String price;
-  String title;
   bool notShowIconCart;
+  Food food;
 
   // Construtor
-  FoodCard({
-    this.identify,
-    this.description,
-    this.image,
-    this.price,
-    this.title,
-    this.notShowIconCart,
-  });
+  FoodCard({this.notShowIconCart = false, this.food});
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +46,8 @@ class FoodCard extends StatelessWidget {
       child: ClipOval(
         //child: Image.asset('assets/images/seu-logo-vai-aqui.jpg'),
         child: CachedNetworkImage(
-          imageUrl: image != ''
-              ? image
+          imageUrl: food.image != ''
+              ? food.image
               : 'https://joiamarketing.com.br/wp-content/uploads/2020/05/cropped-Joia-Marketing-logo-box.png',
           placeholder: (context, url) => Container(
             height: 110,
@@ -83,7 +74,7 @@ class FoodCard extends StatelessWidget {
         children: [
           //Container(padding: EdgeInsets.only(top: 4)),
           Text(
-            title,
+            food.title,
             style: TextStyle(
               color: Colors.black54,
               fontSize: 16.4,
@@ -92,7 +83,7 @@ class FoodCard extends StatelessWidget {
           ),
           Container(padding: EdgeInsets.only(top: 6)),
           Text(
-            description,
+            food.description,
             style: TextStyle(
               color: Colors.black38,
               fontSize: 12.4,
@@ -101,7 +92,7 @@ class FoodCard extends StatelessWidget {
           ),
           Container(padding: EdgeInsets.only(top: 6)),
           Text(
-            "R\$ $price",
+            "R\$ ${food.price}",
             style: TextStyle(
               color: Theme.of(context).primaryColor,
               fontSize: 14.4,

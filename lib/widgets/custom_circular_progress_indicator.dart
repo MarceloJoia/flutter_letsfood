@@ -17,7 +17,7 @@ class CustomCircularProgressIndicator extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            margin: EdgeInsets.all(80),
+            margin: EdgeInsets.all(30),
             width: width,
             height: height,
             child: CircularProgressIndicator(
