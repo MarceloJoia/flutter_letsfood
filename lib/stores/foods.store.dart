@@ -1,5 +1,3 @@
-// import 'dart:ffi';
-
 import 'package:mobx/mobx.dart';
 
 import '../models/Food.dart';
@@ -73,17 +71,26 @@ abstract class _FoodsStareBase with Store {
    */
   @action
   void addFoodCart(Food food) {
+    print('addFoodCart');
     cartItens.add(food);
+
+    foods = foods;
   }
 
   @action
   void removeFoodCart(Food food) {
+    print('removeFoodCart');
     cartItens.remove(food);
+
+    foods = foods;
   }
 
   @action
   void clearCart() {
+    print('clearCart');
     cartItens.clear();
+
+    foods = foods;
   }
 
   // Existe produtos no carrinho? Retorna (true or false)

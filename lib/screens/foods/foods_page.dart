@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
-import '../../models/Category.dart';
+//import '../../models/Category.dart';
 import '../../models/Food.dart';
 import '../../models/Restaurant.dart';
 import '../foods/widgets/Categories.dart';
@@ -19,16 +20,19 @@ class FoodsScreen extends StatefulWidget {
 }
 
 class _FoodsScreenState extends State<FoodsScreen> {
-  // Recuperar os restaurantes
   Restaurant _restaurant;
-  // Recuper Foods
-  FoodsStare storeFoods = new FoodsStare();
-  //Recupera as categorias
-  CategoriesStore storeCategories = new CategoriesStore();
+
+  //FoodsStare storeFoods = new FoodsStare();
+  FoodsStare storeFoods;
+  CategoriesStore storeCategories;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    storeFoods = Provider.of<FoodsStare>(context);
+    storeCategories = Provider.of<CategoriesStore>(context);
+
     RouteSettings settings =
         ModalRoute.of(context).settings; // Pegar as configurações de rota
     _restaurant = settings.arguments; // agora pego o valor do arguments
