@@ -46,7 +46,7 @@ class RestarantCard extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: restaurant.image != ''
                             ? restaurant.image
-                            : 'http://0cfb1fb6f398.ngrok.io/assets/images/letsfood-icon.png',
+                            : 'http://884a5eaa7510.ngrok.io/assets/images/letsfood-icon.png',
                         placeholder: (context, url) => Container(
                           height: 110,
                           width: 110,

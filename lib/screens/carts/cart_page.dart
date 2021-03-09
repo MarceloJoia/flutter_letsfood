@@ -24,7 +24,7 @@ class CartScreen extends StatelessWidget {
       shrinkWrap: false,
       children: <Widget>[
         _buildHeader(),
-        Expanded(child: _buildCartList(context)),
+        _buildCartList(context),
         _buildFormComment(context),
         _buildTextTotalCart(),
         _buildCheckout(context),
