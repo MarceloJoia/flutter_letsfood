@@ -51,7 +51,12 @@ abstract class _CategoriesStoreBase with Store {
    * */
   @action
   void addFilter(String identify) {
-    filtersCategory.add(identify);
+    if (identify == 'all') {
+      return clearFilter();
+    } else {
+      filtersCategory.add(identify);
+    }
+
     //Sempre que adicionar dar um touch na list
     categories = categories;
 
@@ -64,7 +69,10 @@ abstract class _CategoriesStoreBase with Store {
    */
   @action
   void removeFilter(String identify) {
-    filtersCategory.remove(identify);
+    if (identify != 'all') {
+      filtersCategory.remove(identify);
+    }
+
     //Sempre que remover dar um touch na list
     categories = categories;
     filterChanged = !filterChanged;
@@ -74,7 +82,8 @@ abstract class _CategoriesStoreBase with Store {
   @action
   bool inFilter(String identify) {
     //print(identify);
-    return filtersCategory.contains(identify);
+    return (identify == 'all' && filtersCategory.length == 0) ||
+        filtersCategory.contains(identify);
   }
 
   //Limpar todos os FiltersCategory

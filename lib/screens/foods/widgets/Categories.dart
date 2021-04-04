@@ -25,14 +25,15 @@ class Categories extends StatelessWidget {
       height: 70,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: _categories.length,
+        itemCount: _categories.length + 1,
         itemBuilder: (context, index) {
-          /* Pegar o tipo exato da tategoria que estou listando
-        *  Variavel "Category", do tipo "category"
-        *  Vai recebe "_categories" na posição "[index]"
-        ***  final Category category = _categories[index]; ***/
-          final Category category = _categories[index];
+          if (index == 0) {
+            final Category category =
+                Category.fromJson({'identify': 'all', 'name': 'Todas'});
+            return _buildCategory(category, context);
+          }
 
+          final Category category = _categories[index - 1];
           return _buildCategory(category, context);
         },
       ),
