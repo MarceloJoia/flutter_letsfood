@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -9,6 +10,7 @@ import '../../widgets/food_card.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
 import '../../stores/foods.store.dart';
 import '../../stores/categories.store.dart';
+import '../../stores/restaurant.store.dart';
 import '../../widgets/custom_circular_progress_indicator.dart';
 
 class FoodsScreen extends StatefulWidget {
@@ -24,6 +26,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
   //FoodsStore storeFoods = new FoodsStore();
   FoodsStore storeFoods;
   CategoriesStore storeCategories;
+  RestaurantsStore storeRestaurants;
 
   @override
   void didChangeDependencies() {
@@ -31,11 +34,13 @@ class _FoodsScreenState extends State<FoodsScreen> {
 
     storeFoods = Provider.of<FoodsStore>(context);
     storeCategories = Provider.of<CategoriesStore>(context);
+    storeRestaurants = Provider.of<RestaurantsStore>(context);
 
     RouteSettings settings =
         ModalRoute.of(context).settings; // Pegar as configurações de rota
     _restaurant = settings.arguments; // agora pego o valor do arguments
 
+    storeRestaurants.setRestaurant(_restaurant);
     storeCategories.getCategories(_restaurant.uuid); //Carregar Categories
     storeFoods.getFoods(_restaurant.uuid); // Pega todas as comidas
   }
