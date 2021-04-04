@@ -5,13 +5,13 @@ import '../data/network/repositories/food_repository.dart';
 
 part 'foods.store.g.dart';
 
-class FoodsStare = _FoodsStareBase with _$FoodsStare;
+class FoodsStore = _FoodsStoreBase with _$FoodsStore;
 
-abstract class _FoodsStareBase with Store {
+abstract class _FoodsStoreBase with Store {
   // Instanciar o Repository
   FoodRepository _repository;
   // Construtor
-  _FoodsStareBase() {
+  _FoodsStoreBase() {
     _repository = new FoodRepository();
   }
 
@@ -23,7 +23,11 @@ abstract class _FoodsStareBase with Store {
    * Cart itens do carrinho
    */
   @observable
-  ObservableList<Food> cartItens = ObservableList<Food>();
+  //ObservableList<Food> cartItems = ObservableList<Food>();
+  List<Map<String, dynamic>> cartItems = [];
+
+  @observable
+  double totalCart = 0;
 
   // Preload
   @observable
@@ -59,8 +63,12 @@ abstract class _FoodsStareBase with Store {
 
   @action
   Future getFoods(String tokenCompany) async {
+    clearFood();
+    clearCart();
     setLoading(true); //Inicia o Loading
+
     final response = await _repository.getFoods(tokenCompany);
+
     setLoading(false); //Finaliza o Loading
 
     response.map((food) => addFood(Food.fromJson(food))).toList();
@@ -72,28 +80,92 @@ abstract class _FoodsStareBase with Store {
   @action
   void addFoodCart(Food food) {
     print('addFoodCart');
-    cartItens.add(food);
 
-    foods = foods;
+    if (inFoodCart(food)) {
+      return incrementFoodCart(food);
+    }
+
+    cartItems.add({
+      'identify': food.identify,
+      'qty': 1,
+      'product': food,
+    });
+
+    calcTotalCart();
   }
 
   @action
   void removeFoodCart(Food food) {
     print('removeFoodCart');
-    cartItens.remove(food);
 
-    foods = foods;
+    cartItems.removeWhere((element) => element['identify'] == food.identify);
+
+    calcTotalCart();
   }
 
   @action
   void clearCart() {
     print('clearCart');
-    cartItens.clear();
+    cartItems.clear();
 
-    foods = foods;
+    calcTotalCart();
+  }
+
+  /**
+   * Incrementa produtos no carrinho
+   */
+  @action
+  void incrementFoodCart(Food food) {
+    final int index =
+        cartItems.indexWhere((element) => element['identify'] == food.identify);
+
+    cartItems[index]['qty'] = cartItems[index]['qty'] + 1;
+
+    calcTotalCart();
+  }
+
+  /**
+   * decrementa produtos no carrinho
+   */
+  @action
+  void decrementFoodCart(Food food) {
+    final int index =
+        cartItems.indexWhere((element) => element['identify'] == food.identify);
+
+    cartItems[index]['qty'] = cartItems[index]['qty'] - 1;
+
+    if (cartItems[index]['qty'] == 0) {
+      return removeFoodCart(food);
+    }
+
+    calcTotalCart();
   }
 
   // Existe produtos no carrinho? Retorna (true or false)
   @action
-  bool inFoodCart(Food food) => cartItens.contains(food);
+  bool inFoodCart(Food food) {
+    final int index =
+        cartItems.indexWhere((element) => element['identify'] == food.identify);
+
+    return index != -1; // se diferente de menos 1 está no carrinho
+  }
+
+  @action
+  double calcTotalCart() {
+    double total = 0;
+
+    //map() percorre todos os itens
+    cartItems
+        .map((element) =>
+            total += element['qty'] * double.parse(element['product'].price))
+        .toList();
+    totalCart = total;
+
+    foods = foods;
+
+    // Forçar atualização
+    cartItems = cartItems;
+
+    return total;
+  }
 }

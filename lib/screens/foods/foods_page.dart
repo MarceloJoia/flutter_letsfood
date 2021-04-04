@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-//import '../../models/Category.dart';
 import '../../models/Food.dart';
 import '../../models/Restaurant.dart';
 import '../foods/widgets/Categories.dart';
@@ -22,15 +21,15 @@ class FoodsScreen extends StatefulWidget {
 class _FoodsScreenState extends State<FoodsScreen> {
   Restaurant _restaurant;
 
-  //FoodsStare storeFoods = new FoodsStare();
-  FoodsStare storeFoods;
+  //FoodsStore storeFoods = new FoodsStore();
+  FoodsStore storeFoods;
   CategoriesStore storeCategories;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    storeFoods = Provider.of<FoodsStare>(context);
+    storeFoods = Provider.of<FoodsStore>(context);
     storeCategories = Provider.of<CategoriesStore>(context);
 
     RouteSettings settings =
@@ -97,7 +96,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
   Widget _buildfood() {
     return Container(
       // Pegar a altura total
-      height: (MediaQuery.of(context).size.height - 196),
+      height: (MediaQuery.of(context).size.height - 226),
       width: MediaQuery.of(context).size.width,
       //color: Colors.black,
 

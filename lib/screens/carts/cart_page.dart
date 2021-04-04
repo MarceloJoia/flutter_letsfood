@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 
 import '../../widgets/flutter_bottom_navigator.dart';
 import '../../widgets/show_image_cached_network.dart';
+import '../../models/Food.dart';
+import '../../stores/foods.store.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({Key key}) : super(key: key);
+  FoodsStore _foodsStore;
 
   @override
   Widget build(BuildContext context) {
+    _foodsStore = Provider.of<FoodsStore>(context);
+
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -33,30 +40,38 @@ class CartScreen extends StatelessWidget {
   }
 
   Widget _buildHeader() {
-    return Container(
-      alignment: Alignment.topLeft,
-      margin: EdgeInsets.only(top: 16, left: 10, bottom: 10),
-      child: Text(
-        "Total (3) Itens",
-        style: TextStyle(
-          color: Colors.black87,
-          fontSize: 14.0,
-          fontWeight: FontWeight.normal,
+    return Observer(
+      builder: (context) => Container(
+        alignment: Alignment.topLeft,
+        margin: EdgeInsets.only(top: 16, left: 10, bottom: 10),
+        child: Text(
+          "Total (${_foodsStore.cartItems.length}) Itens",
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 14.0,
+            fontWeight: FontWeight.normal,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildCartList(context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      primary: false,
-      itemCount: 6,
-      itemBuilder: (context, index) => _buildCartItem(context),
+    return Observer(
+      builder: (context) => ListView.builder(
+        shrinkWrap: true,
+        primary: false,
+        itemCount: _foodsStore.cartItems.length,
+        itemBuilder: (context, index) {
+          final Map<String, dynamic> itemCart = _foodsStore.cartItems[index];
+          return _buildCartItem(itemCart, context);
+        },
+      ),
     );
   }
 
-  Widget _buildCartItem(context) {
+  Widget _buildCartItem(Map<String, dynamic> itemCart, context) {
+    final Food food = itemCart['product'];
     return Stack(
       children: <Widget>[
         Container(
@@ -73,9 +88,11 @@ class CartScreen extends StatelessWidget {
             padding: EdgeInsets.all(5),
             child: Row(
               children: <Widget>[
-                ShowImageCacheNetwork(
-                    'https://joiamarketing.com.br/wp-content/uploads/2020/05/cropped-Joia-Marketing-logo-box.png'),
-                _showDetailItemCart(context),
+                // exibe as imagens
+                ShowImageCacheNetwork(food.image != null
+                    ? food.image
+                    : 'https://joiamarketing.com.br/wp-content/uploads/2020/05/cropped-Joia-Marketing-logo-box.png'),
+                _showDetailItemCart(food, itemCart, context),
               ],
             ),
           ),
@@ -83,26 +100,29 @@ class CartScreen extends StatelessWidget {
 
         // posicionar o bottom de Close
         Align(
-          alignment: Alignment.topRight,
-          child: Container(
-            margin: EdgeInsets.only(top: 2, right: 4),
-            height: 24,
-            width: 24,
-            decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(Radius.circular(100))),
-            child: Icon(
-              Icons.close,
-              size: 20,
-              color: Colors.white,
-            ),
-          ),
-        ),
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+              onTap: () => _foodsStore.removeFoodCart(food),
+              child: Container(
+                margin: EdgeInsets.only(top: 2, right: 4),
+                height: 24,
+                width: 24,
+                decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.all(Radius.circular(100))),
+                child: Icon(
+                  Icons.close,
+                  size: 20,
+                  color: Colors.white,
+                ),
+              ),
+            )),
       ],
     );
   }
 
-  Widget _showDetailItemCart(context) {
+  Widget _showDetailItemCart(
+      Food food, Map<String, dynamic> itemCart, context) {
     return Expanded(
       child: Container(
         padding: EdgeInsets.only(top: 2, bottom: 4, right: 20, left: 8),
@@ -111,7 +131,7 @@ class CartScreen extends StatelessWidget {
           //mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Pizza Hut',
+              food.title,
               maxLines: 2,
               style: TextStyle(
                   fontSize: 16, color: Theme.of(context).primaryColor),
@@ -122,23 +142,36 @@ class CartScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    "R\$ 399.30",
+                    "R\$ ${food.price}",
                     maxLines: 2,
                     style: TextStyle(fontSize: 12, color: Colors.green[800]),
                   ),
                   Container(
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.remove,
-                            size: 24, color: Colors.grey.shade700),
+                        GestureDetector(
+                          onTap: () => _foodsStore.decrementFoodCart(food),
+                          child: Icon(
+                            Icons.remove,
+                            size: 24,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
                         Container(
                           padding: EdgeInsets.only(
                               top: 4, bottom: 4, left: 12, right: 12),
                           color: Theme.of(context).primaryColor,
-                          child:
-                              Text('2', style: TextStyle(color: Colors.white)),
+                          child: Text(itemCart['qty'].toString(),
+                              style: TextStyle(color: Colors.white)),
                         ),
-                        Icon(Icons.add, size: 24, color: Colors.grey.shade700),
+                        GestureDetector(
+                          onTap: () => _foodsStore.incrementFoodCart(food),
+                          child: Icon(
+                            Icons.add,
+                            size: 24,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -155,16 +188,17 @@ class CartScreen extends StatelessWidget {
    * Valor total das compras.
    */
   Widget _buildTextTotalCart() {
-    return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
-      child: Text(
-        "Valor total: R\$ 495.20",
-        style: TextStyle(
-          color: Colors.grey[600],
-          fontSize: 20,
-        ),
-      ),
-    );
+    return Observer(
+        builder: (context) => Container(
+              margin: EdgeInsets.only(left: 10, right: 10),
+              child: Text(
+                "Valor total: R\$ ${_foodsStore.totalCart}",
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 20,
+                ),
+              ),
+            ));
   }
 
   Widget _buildFormComment(context) {

@@ -13,8 +13,8 @@ class FlutterFoodApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<FoodsStare>(
-          create: (_) => FoodsStare(),
+        Provider<FoodsStore>(
+          create: (_) => FoodsStore(),
         ),
         Provider<CategoriesStore>(
           create: (_) => CategoriesStore(),

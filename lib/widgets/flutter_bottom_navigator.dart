@@ -8,7 +8,7 @@ import '../stores/foods.store.dart';
 
 class FlutterFoodBottomNavigator extends StatelessWidget {
   int _active_item = 0;
-  //FoodsStare storeFoods = new FoodsStare();
+  //FoodsStore storeFoods = new FoodsStore();
 
   FlutterFoodBottomNavigator(this._active_item);
 
@@ -50,7 +50,7 @@ class FlutterFoodBottomNavigator extends StatelessWidget {
   }
 
   Widget _iconCart(context) {
-    final storeFoods = Provider.of<FoodsStare>(context);
+    final storeFoods = Provider.of<FoodsStore>(context);
     return Stack(
       children: [
         Icon(Icons.shopping_cart),
@@ -68,7 +68,7 @@ class FlutterFoodBottomNavigator extends StatelessWidget {
             ),
             child: Observer(builder: (_) {
               return Text(
-                storeFoods.cartItens.length.toString(),
+                storeFoods.cartItems.length.toString(),
                 style: TextStyle(color: Colors.white),
                 textAlign: TextAlign.center,
               );

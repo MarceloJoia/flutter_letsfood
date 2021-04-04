@@ -9,7 +9,7 @@ class FoodCard extends StatelessWidget {
   bool notShowIconCart;
   Food food;
 
-  //FoodsStare storeFoods = new FoodsStare();
+  //FoodsStore storeFoods = new FoodsStore();
 
   // Construtor
   FoodCard({this.notShowIconCart = false, this.food});
@@ -109,7 +109,7 @@ class FoodCard extends StatelessWidget {
   }
 
   Widget _buildButtonCart(context) {
-    final storeFoods = Provider.of<FoodsStare>(context);
+    final storeFoods = Provider.of<FoodsStore>(context);
     return notShowIconCart
         ? Container()
         : Container(
@@ -119,7 +119,10 @@ class FoodCard extends StatelessWidget {
               child: storeFoods.inFoodCart(food)
                   ? GestureDetector(
                       onTap: () => storeFoods.removeFoodCart(food),
-                      child: Icon(Icons.remove_shopping_cart),
+                      child: Icon(
+                        Icons.remove_shopping_cart,
+                        color: Colors.green,
+                      ),
                     )
                   : GestureDetector(
                       onTap: () => storeFoods.addFoodCart(food),
