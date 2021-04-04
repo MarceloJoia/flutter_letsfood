@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/Food.dart';
@@ -27,6 +27,7 @@ class _FoodsScreenState extends State<FoodsScreen> {
   FoodsStore storeFoods;
   CategoriesStore storeCategories;
   RestaurantsStore storeRestaurants;
+  ReactionDisposer disposer;
 
   @override
   void didChangeDependencies() {
@@ -40,9 +41,23 @@ class _FoodsScreenState extends State<FoodsScreen> {
         ModalRoute.of(context).settings; // Pegar as configurações de rota
     _restaurant = settings.arguments; // agora pego o valor do arguments
 
+    disposer =
+        reaction((_) => storeCategories.filterChanged, (filterChanged) async {
+      if (!storeCategories.isLoading && !storeFoods.isLoading) {
+        await storeFoods.getFoods(_restaurant.uuid,
+            categoriesFilter: storeCategories.filtersCategory);
+      }
+    });
+
     storeRestaurants.setRestaurant(_restaurant);
     storeCategories.getCategories(_restaurant.uuid); //Carregar Categories
     storeFoods.getFoods(_restaurant.uuid); // Pega todas as comidas
+  }
+
+  @override
+  void dispose() {
+    disposer();
+    super.dispose();
   }
 
   @override
