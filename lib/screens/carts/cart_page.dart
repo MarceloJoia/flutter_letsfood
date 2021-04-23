@@ -7,15 +7,19 @@ import '../../widgets/flutter_bottom_navigator.dart';
 import '../../widgets/show_image_cached_network.dart';
 import '../../models/Food.dart';
 import '../../stores/foods.store.dart';
+import '../../stores/orders.store.dart';
 
 class CartScreen extends StatelessWidget {
   FoodsStore _foodsStore;
   RestaurantsStore _storeRestaurants;
+  OrdersStore _ordersStore;
+  TextEditingController _commentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     _foodsStore = Provider.of<FoodsStore>(context);
     _storeRestaurants = Provider.of<RestaurantsStore>(context);
+    _ordersStore = Provider.of<OrdersStore>(context);
 
     final String titlePage = _storeRestaurants.restaurant != null
         ? "Carrinho - ${_storeRestaurants.restaurant.name}"
@@ -190,7 +194,7 @@ class CartScreen extends StatelessWidget {
     );
   }
 
-  /**
+  /*
    * Valor total das compras.
    */
   Widget _buildTextTotalCart() {
@@ -211,6 +215,7 @@ class CartScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10),
       child: TextFormField(
+        controller: _commentController,
         autocorrect: true,
         style: TextStyle(color: Theme.of(context).primaryColor),
         cursorColor: Theme.of(context).primaryColor,
@@ -248,14 +253,32 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: RaisedButton(
-        onPressed: () {
-          print('Checkout..');
-        },
-        child: Text('Enviar Pedido'),
-        color: Colors.transparent,
-        elevation: 0,
+      child: Observer(
+        builder: (context) => RaisedButton(
+          onPressed: () =>
+              _ordersStore.isMakingOrder ? null : _makeOrder(context),
+          child: _ordersStore.isMakingOrder
+              ? Text('Fazendo o pedido...')
+              : Text('Finalizar Pedido'),
+          color: Colors.transparent,
+          elevation: 0,
+        ),
       ),
     );
+  }
+
+  Future _makeOrder(context) async {
+    await _ordersStore.makeOrder(
+      _storeRestaurants.restaurant.uuid,
+      _foodsStore.cartItems,
+      comment: _commentController.text,
+    );
+
+    // Remove os itens do carrinho após finalizar pedidos
+    _foodsStore.clearCart();
+    // Remove os comentários do pedidos
+    _commentController.text = '';
+
+    Navigator.pushReplacementNamed(context, '/my-orders');
   }
 }

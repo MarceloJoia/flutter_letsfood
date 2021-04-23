@@ -10,7 +10,7 @@ class FoodRepository {
   }
 
   // Retorna as comidas
-  /** 
+  /*
     * http://10.0.2.2/api/v1/products&token_company=tokenDaCompanhia
     * Para isso preciso de uma Query parametro
     */

@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
+import '../../stores/orders.store.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
 import '../../models/Order.dart';
+import '../../widgets/custom_circular_progress_indicator.dart';
 
 class OrderScreen extends StatelessWidget {
-  // Order fake
-  List<Order> _orders = [
-    new Order(date: '30/02/2021', identify: '5DFJF144'),
-    new Order(date: '30/03/2021', identify: '24saF144'),
-    new Order(date: '30/04/2021', identify: '247g8g144'),
-    new Order(date: '30/03/2021', identify: '24saF144'),
-    new Order(date: '30/04/2021', identify: '247g8g144'),
-    new Order(date: '30/03/2021', identify: '24dfff8444'),
-    new Order(date: '30/04/2021', identify: '2asddass4544'),
-    new Order(date: '30/05/2021', identify: '2sgas4'),
-    new Order(date: '30/06/2021', identify: '544drghbdf'),
-  ];
+  OrdersStore _ordersStore;
 
   @override
   Widget build(BuildContext context) {
+    _ordersStore = Provider.of<OrdersStore>(context);
+    _ordersStore.getMyOrders();
+
     return Scaffold(
       appBar: AppBar(title: Text('Meus Pedidos'), centerTitle: true),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: _buildOrderScreen(),
+      body: Observer(builder: (context) => _buildOrderScreen()),
       bottomNavigationBar: FlutterFoodBottomNavigator(1),
     );
   }
@@ -31,7 +27,11 @@ class OrderScreen extends StatelessWidget {
     return Column(
       children: <Widget>[
         _buildHeader(),
-        _buildOrdersList(),
+        _ordersStore.isLoading
+            ? CustomCircularProgressIndicator(
+                textLabel: 'Carregando os pedidos',
+              )
+            : _buildOrdersList(),
       ],
     );
   }
@@ -52,9 +52,9 @@ class OrderScreen extends StatelessWidget {
   Widget _buildOrdersList() {
     return Expanded(
         child: ListView.builder(
-      itemCount: _orders.length,
+      itemCount: _ordersStore.orders.length,
       itemBuilder: (context, index) {
-        final Order order = _orders[index];
+        final Order order = _ordersStore.orders[index];
         return _buildItemOrder(order, context);
       },
     ));

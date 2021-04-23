@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
+import '../../stores/auth.store.dart';
 import './widgets/heading_auth.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -7,43 +10,39 @@ class RegisterScreen extends StatelessWidget {
   double _deviceWidth;
   double _deviceHeight;
 
+  AuthStore _authStore;
+  TextEditingController _name = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    /// Pagar a largura da tela do Celular
-    _deviceWidth = MediaQuery.of(context).size.width;
+    _authStore = Provider.of<AuthStore>(context);
 
-    /// Pagar a altura da tela do Celular
+    _deviceWidth = MediaQuery.of(context).size.width;
     _deviceHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: SingleChildScrollView(
-        child: _loginPageUI(context),
+        child: Observer(
+          builder: (context) => _registerUI(context),
+        ),
       ),
     );
   }
 
-  Widget _loginPageUI(context) {
+  Widget _registerUI(context) {
     return Container(
-      /// Pegar a largura proporcianal da tela
       padding: EdgeInsets.symmetric(horizontal: _deviceWidth * 0.10),
-
       child: Column(
         children: <Widget>[
-          // Dar um Padding usar o Container
           Container(height: 40),
-
-          //_headingAuth(),
           HeadingAuth(),
-          // Dar um Padding usar o Container
           Container(height: 20),
-
           _formLogin(context),
-          // Dar um Padding usar o Container
           Container(height: 10),
-
           _loginButton(context),
-          // Dar um Padding usar o Container
           Container(height: 20),
           _textRegister(context),
         ],
@@ -78,6 +77,7 @@ class RegisterScreen extends StatelessWidget {
 
   Widget _nameTextFild(context) {
     return TextFormField(
+      controller: _name,
       autocorrect: false,
       autofocus: true,
       style: TextStyle(color: Theme.of(context).primaryColor),
@@ -101,6 +101,7 @@ class RegisterScreen extends StatelessWidget {
 
   Widget _emailTextFild(context) {
     return TextFormField(
+      controller: _email,
       autocorrect: false,
       autofocus: false,
       style: TextStyle(color: Theme.of(context).primaryColor),
@@ -124,6 +125,7 @@ class RegisterScreen extends StatelessWidget {
 
   Widget _passwordTextFild(context) {
     return TextFormField(
+      controller: _password,
       autocorrect: false,
       autofocus: true,
       obscureText: true, //oculta a senha
@@ -151,13 +153,10 @@ class RegisterScreen extends StatelessWidget {
       //pegar o tamanho total
       width: _deviceWidth,
       child: MaterialButton(
-        onPressed: () {
-          print('login...');
-          Navigator.pushReplacementNamed(context, '/restaurants');
-        },
+        onPressed: () => _authStore.isLoading ? null : register(context),
         // Estilo
         color: Theme.of(context).primaryColor,
-        child: Text('Cadastrar'),
+        child: Text(_authStore.isLoading ? 'Cadastrando' : 'Cadastrar'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
       ),
     );
@@ -173,5 +172,11 @@ class RegisterScreen extends StatelessWidget {
         style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18.2),
       ),
     );
+  }
+
+  Future register(context) async {
+    await _authStore.register(_name.text, _email.text, _password.text);
+
+    Navigator.pushReplacementNamed(context, '/restaurants');
   }
 }

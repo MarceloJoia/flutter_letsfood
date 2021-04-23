@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../stores/auth.store.dart';
 import '../../widgets/flutter_bottom_navigator.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({Key key}) : super(key: key);
+  AuthStore _authStore;
 
   @override
   Widget build(BuildContext context) {
+    _authStore = Provider.of<AuthStore>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Meu perfil'),
@@ -28,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            'Marcelo J',
+            _authStore.user.name,
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
@@ -37,7 +40,7 @@ class ProfileScreen extends StatelessWidget {
           ),
           Container(height: 12),
           Text(
-            'sac@joiamarketing.com.br',
+            _authStore.user.email,
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
@@ -50,10 +53,8 @@ class ProfileScreen extends StatelessWidget {
           /// Logout
           Container(
             child: RaisedButton(
-              onPressed: () {
-                print('Logout');
-              },
-              child: Text("Sair"),
+              onPressed: () => _authStore.isLoading ? null : logout(context),
+              child: Text(_authStore.isLoading ? 'Saindo' : 'Sair'),
               elevation: 2.2,
               color: Colors.red,
 
@@ -67,5 +68,10 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future logout(context) async {
+    await _authStore.logout();
+    Navigator.popAndPushNamed(context, '/login');
   }
 }

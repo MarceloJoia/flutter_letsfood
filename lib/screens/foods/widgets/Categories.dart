@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 import '../../../stores/categories.store.dart';
@@ -46,8 +45,8 @@ class Categories extends StatelessWidget {
     final bool inFilter = categoriesStore.inFilter(identifyCategory);
     return GestureDetector(
       onTap: () => inFilter
-          ? categoriesStore.removeFilter(identifyCategory)
-          : categoriesStore.addFilter(identifyCategory),
+          ? categoriesStore.removeFilter(category.identify)
+          : categoriesStore.addFilter(category.identify),
       child: Container(
         // Espaçamentos
         margin: EdgeInsets.all(5),
