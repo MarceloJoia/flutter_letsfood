@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class ShowImageCacheNetwork extends StatelessWidget {
+class ShowImageCachedNetwork extends StatelessWidget {
   String _image = '';
-  ShowImageCacheNetwork(this._image);
+  ShowImageCachedNetwork(this._image);
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import '../../../constants/api.dart';
 import '../../../models/Restaurant.dart';
 
 class RestarantCard extends StatelessWidget {
@@ -46,7 +47,7 @@ class RestarantCard extends StatelessWidget {
                       child: CachedNetworkImage(
                         imageUrl: restaurant.image != ''
                             ? restaurant.image
-                            : 'http://10.0.2.2/assets/images/letsfood-icon.png',
+                            : '${URL}assets/images/letsfood-icon.png',
                         placeholder: (context, url) => Container(
                           height: 110,
                           width: 110,

@@ -1,68 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../../widgets/flutter_bottom_navigator.dart';
 import '../../models/Order.dart';
 import '../../models/Food.dart';
 import '../../models/Evaluation.dart';
 import '../../widgets/food_card.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
-  Order _order = Order(
-    identify: '4545sdf4',
-    date: '30/02/2021',
-    status: 'open',
-    total: (90).toDouble(),
-    comment: 'Sem cebola, por favor',
-    //foods é uma lista apresenta várias comidas
-    foods: [
-      Food(
-        identify: '658gvd889sdf',
-        title: 'Bolo de Cereja',
-        image:
-            'https://casadocaminhosc.com.br/wp-content/uploads/2020/12/imagem-Talharim.jpg',
-        description: 'Descrição do Bolo de Cereja',
-        price: '12.89',
-      ),
-      Food(
-        identify: 'g9474gvd889sdf',
-        title: 'Torta de Maracuja',
-        image:
-            'https://casadocaminhosc.com.br/wp-content/uploads/2020/12/imagem-Talharim.jpg',
-        description: 'Descrição do Torta de Maracuja',
-        price: '52.51',
-      ),
-      Food(
-        identify: '658gvd889sdf',
-        title: 'Bolo de Cereja',
-        image:
-            'https://casadocaminhosc.com.br/wp-content/uploads/2020/12/imagem-Talharim.jpg',
-        description: 'Descrição do Bolo de Cereja',
-        price: '12.89',
-      ),
-    ],
-    evaluations: [
-      /* Evaluation(
-        comment: 'Pedido muito bom',
-        nameUser: 'Marcelo J',
-        stars: 5,
-      ),
-      Evaluation(
-        comment: 'Recomendo',
-        nameUser: 'Pedro B',
-        stars: 4,
-      ),*/
-    ],
-  );
+  Order _order;
 
   @override
   Widget build(BuildContext context) {
+    RouteSettings settings = ModalRoute.of(context).settings;
+    _order = settings.arguments;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Detalhe do Pedido'), centerTitle: true),
+      appBar: AppBar(title: Text('Detalhes do Pedido'), centerTitle: true),
       backgroundColor: Theme.of(context).backgroundColor,
-      body: SingleChildScrollView(
-        child: _buildOrderDetails(context),
-      ),
+      body: SingleChildScrollView(child: _buildOrderDetails(context)),
       bottomNavigationBar: FlutterFoodBottomNavigator(1),
     );
   }
@@ -71,33 +27,29 @@ class OrderDetailsScreen extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 20, bottom: 20, left: 10, right: 10),
       child: Column(
-        // Alinha na esquerda
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _makeTextOrder('Número', _order.identify),
           _makeTextOrder('Data', _order.date),
           _makeTextOrder('Status', _order.status),
           _makeTextOrder('Total', _order.total.toString()),
-          _makeTextOrder('Comentário', _order.comment),
-
-          /// Listar produtos
-          Container(height: 20),
-          Text('Comidas',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22)),
-          _builFoodsOrder(context),
+          _order.comment != null
+              ? _makeTextOrder('Comentário', _order.comment)
+              : Container(),
           Container(height: 30),
-
-          /// Avaliação do pedido
-          Container(height: 20),
-          Text('Avaliações',
+          Text('Comidas:',
               style: TextStyle(
                   color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 22)),
-          _builEvaluationsOrder(context),
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold)),
+          _buildFoodsOrder(),
+          Container(height: 30),
+          Text('Avaliações:',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold)),
+          _buildEvaluationsOrder(context),
         ],
       ),
     );
@@ -105,16 +57,15 @@ class OrderDetailsScreen extends StatelessWidget {
 
   Widget _makeTextOrder(String textLabel, String textValue) {
     return Container(
-      margin: EdgeInsets.only(top: 3, bottom: 3),
+      margin: EdgeInsets.only(top: 5, bottom: 5),
       child: Row(
         children: <Widget>[
           Text(
             textLabel + ': ',
-            style: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           Text(
-            textValue + ': ',
+            textValue,
             style: TextStyle(color: Colors.black),
           )
         ],
@@ -122,13 +73,10 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  /// Listar produtos do pedido
-  Widget _builFoodsOrder(context) {
-    // Os produtos são uma lista um array usar ListView()
+  Widget _buildFoodsOrder() {
     return Container(
       padding: EdgeInsets.only(left: 10),
       child: ListView.builder(
-          //remover o Scroll
           shrinkWrap: true,
           itemCount: _order.foods.length,
           itemBuilder: (context, index) {
@@ -141,8 +89,7 @@ class OrderDetailsScreen extends StatelessWidget {
     );
   }
 
-  /// Avaliação do pedido
-  Widget _builEvaluationsOrder(context) {
+  Widget _buildEvaluationsOrder(context) {
     return _order.evaluations.length > 0
         ? Container(
             padding: EdgeInsets.only(left: 10),
@@ -151,38 +98,40 @@ class OrderDetailsScreen extends StatelessWidget {
               itemCount: _order.evaluations.length,
               itemBuilder: (context, index) {
                 final Evaluation evaluation = _order.evaluations[index];
-                return _builEvaluationItem(evaluation, context);
+                return _buildEvaluationItem(evaluation, context);
               },
             ),
           )
         : Container(
             height: 40,
-            margin: EdgeInsets.only(top: 10, bottom: 40),
+            margin: EdgeInsets.only(bottom: 30, top: 10),
             child: RaisedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/evaluation-order');
+                Navigator.pushNamed(
+                  context,
+                  '/evaluation-order',
+                  arguments: _order.identify,
+                );
               },
               color: Colors.orange,
               elevation: 2.2,
-              child: Text('Avaliar o pedido'),
+              child: Text('Avaliar o Pedido'),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-                side: BorderSide(color: Colors.orangeAccent),
-              ),
+                  borderRadius: BorderRadius.circular(18),
+                  side: BorderSide(color: Colors.orangeAccent)),
             ),
           );
   }
 
-  Widget _builEvaluationItem(Evaluation evaluation, context) {
+  Widget _buildEvaluationItem(Evaluation evaluation, context) {
     return Card(
       elevation: 2.5,
       child: Container(
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.grey[50],
-          border: Border.all(color: Colors.grey[100]),
-          borderRadius: BorderRadius.all(Radius.circular(3)),
-        ),
+            color: Colors.grey[50],
+            border: Border.all(color: Colors.grey[100]),
+            borderRadius: BorderRadius.all(Radius.circular(4))),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -192,15 +141,13 @@ class OrderDetailsScreen extends StatelessWidget {
               direction: Axis.horizontal,
               allowHalfRating: true,
               itemCount: 5,
-              itemSize: 40,
+              itemSize: 12,
               itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
               itemBuilder: (context, _) => Icon(
                 Icons.star,
                 color: Colors.amber,
               ),
-              onRatingUpdate: (rating) {
-                print(rating);
-              },
+              onRatingUpdate: null,
             ),
             Row(
               children: <Widget>[
@@ -211,8 +158,7 @@ class OrderDetailsScreen extends StatelessWidget {
                 ),
                 Text(
                   evaluation.comment,
-                  style: TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Colors.black),
                 ),
               ],
             ),

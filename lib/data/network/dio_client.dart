@@ -1,18 +1,14 @@
 import 'package:dio/dio.dart';
 
-import './interceptor/dio_Interceptor.dart';
+import './interceptors/dio_Interceptor.dart';
 
 class DioClient {
   Dio _dio;
 
-  ///Construtor
   DioClient() {
     _dio = dioInterceptor();
   }
 
-  /// Metodo de requisição da API. Com o "response" já temos o retorno exato de nossa API.
-  /// Permite enviar parametros "Map<String, dynamic> queryParameters".
-  /// Method Get
   Future<dynamic> get(String url,
       {Map<String, dynamic> queryParameters}) async {
     try {
@@ -25,7 +21,6 @@ class DioClient {
     }
   }
 
-  /// Method Post
   Future<dynamic> post(String url,
       {formData, Map<String, dynamic> queryParameters}) async {
     try {
